@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>redPill</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  </head>
+  <script>
+		$(document).ready(function () {
+			// prototype rot13
+			String.prototype.rot13 = function () {
+				return this.replace(/[a-zA-Z]/g, function (c) {
+					return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+				});
+			};
+
+			// On recupere le json
+			$.getJSON('https://dweet.io:443/get/dweets/for/rc2c-jobapplication', function (json) {
+				var message = null;
+
+				// On assemble le message
+				$(json.with).each(function () {
+					message += this.content.message
+				});
+
+				// rot13
+				message = message.rot13();
+
+				// reverse :-)
+				message = message.split("").reverse().join("");
+
+				// On affiche dans la div
+				$('#divMessage').text(message);
+			});
+
+		});
+  </script>
+	<style>
+		#divMessage{
+			color:red;
+			font-weight: bold;		
+			font-size: 18px;
+		}
+
+		#divMessage::after {
+			content: "";
+			background-image: url('http://images2.fanpop.com/images/photos/6100000/The-Matrix-Trinity-Wallpaper-the-matrix-6100705-1024-768.jpg');
+			background-repeat: no-repeat;
+			opacity: 0.2;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			position: absolute;
+			z-index: -1;   
+		}
+	</style>
+  <body>
+		<div id="divMessage"></div>
+  </body>
+</html>
